@@ -1,0 +1,22 @@
+azure:
+  activedirectory:
+    b2c:
+      tenant: devB2Cxxxx
+      client-id: 86105xxxxx5e7f
+      client-secret: cRR8Q~xxxxxx_Ui65CFfGcce
+      reply-url: http://localhost:8080/home # should be absolute url.
+      # http://localhost:8080/login/oauth2/code/azure from the other tutorial
+      # https://docs.microsoft.com/en-us/java/azure/spring-framework/configure-spring-boot-starter-java-app-with-azure-active-directory?view=azure-java-stable
+      logout-success-url: http://localhost:8080/home
+      user-name-attribute-name: given_name
+      user-flows:
+        sign-up-or-sign-in: B2C_1_xxxxsloginflow
+        #profile-edit: B2C_1_profile_editing     # optional
+        #password-reset: B2C_1_Password_Reset # optional
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+             user-name-attribute: given_name

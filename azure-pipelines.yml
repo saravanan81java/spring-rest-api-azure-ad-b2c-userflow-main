@@ -1,0 +1,37 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+- main
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '{{ containerRegistryConnection.Id }}'
+  imageRepository: 'fish-cache-manager-complete'
+  containerRegistry: 'eaccessreplacementregistry.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: 'latest'
+  azureSubscription: 'SP.DigitalLab.DevOps'
+  appName: 'azureadapplogin'
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo 'docker login'
+      docker login eaccessreplacementregistry.azurecr.io --username eaccessreplacementregistry --password Mu7hqNlH08q8=abPWOyX4MJ1v2VbH5sD
+      echo 'mvn jib plugin build'
+      mvn compile jib:build
+      echo 'completed'
+- task: AzureWebAppContainer@1
+  displayName: 'Azure Web App on Container Deploy'
+  inputs:
+    azureSubscription: $(azureSubscription)
+    appName: $(appName)
+    containers: $(containerRegistry)/$(imageRepository):$(tag)
